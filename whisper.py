@@ -81,7 +81,7 @@ def main():
     args = parser.parse_args()
     
     if os.path.isdir(args.audio_path):
-            audio_files = [os.path.join(args.audio_path, file) for file in os.listdir(args.audio_path)]
+        audio_files = [os.path.join(args.audio_path, file) for file in os.listdir(args.audio_path)]
     else:
         audio_files = [args.audio_path]
     
