@@ -23,7 +23,7 @@ parser.add_argument(
 parser.add_argument(
     "--transcript_path",
     required=False,
-    default="output.jsonl",
+    default="transcript.jsonl",
     type=str,
     help="Path to save the transcription output. (default: output.jsonl)",
 )
