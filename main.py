@@ -14,14 +14,14 @@ from transformers import pipeline
 parser = argparse.ArgumentParser(description="A fast SST inference script")
 
 parser.add_argument(
-    "--audio-path",
+    "--audio_path",
     required=True,
     type=str,
     help="Path of the audio file or directory of audio files to be transcribed.",
 )
 
 parser.add_argument(
-    "--transcript-path",
+    "--transcript_path",
     required=False,
     default="output.jsonl",
     type=str,
@@ -29,7 +29,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--model-name",
+    "--model_name",
     required=False,
     default="distil-whisper/distil-medium.en",
     type=str,
@@ -37,7 +37,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--chunk-batch-size",
+    "--chunk_batch_size",
     required=False,
     type=int,
     default=24,
@@ -45,7 +45,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--batch-size",
+    "--batch_size",
     required=False,
     type=int,
     default=1,
@@ -70,7 +70,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--chunk-length-s",
+    "--chunk_length_s",
     required=False,
     type=float,
     default=30.0,
@@ -88,9 +88,8 @@ def main():
             model=args.model_name,
             torch_dtype=torch.float16,
             model_kwargs={"use_flash_attention_2": args.flash, "low_cpu_mem_usage": True},
+            device=distributed_state.device,
         )
-        
-        pipe.to(distributed_state)
         
         done_queue = Queue()
         
@@ -117,7 +116,7 @@ def main():
         num_gpus = torch.cuda.device_count()
         
         # get num gpu files at a time
-        for i in tqdm(range(0, len(audio_files), num_gpus)):
+        for i in tqdm(range(0, len(audio_files), num_gpus * args.batch_size)):
             batch = audio_files[i : i + num_gpus * args.batch_size]
             
             # run inference on each gpu
