@@ -80,6 +80,11 @@ parser.add_argument(
 def main():
     args = parser.parse_args()
     
+    if os.path.isdir(args.audio_path):
+            audio_files = [os.path.join(args.audio_path, file) for file in os.listdir(args.audio_path)]
+    else:
+        audio_files = [args.audio_path]
+    
     if torch.cuda.is_available():
         distributed_state = PartialState()
         
@@ -104,10 +109,6 @@ def main():
                     f.write("\n")
         
         # each gpu runs it's own copy of the model
-        if os.path.isdir(args.audio_path):
-            audio_files = [os.path.join(args.audio_path, file) for file in os.listdir(args.audio_path)]
-        else:
-            audio_files = [args.audio_path]
         
         # start writer thread
         writer_thread = threading.Thread(target=write_to_jsonl)
@@ -143,11 +144,6 @@ def main():
             model_kwargs={"low_cpu_mem_usage": True},
         )
         pipe.model = pipe.model.to_bettertransformer()
-
-        if os.path.isdir(args.audio_path):
-            audio_files = [os.path.join(args.audio_path, file) for file in os.listdir(args.audio_path)]
-        else:
-            audio_files = [args.audio_path]
        
         for i in tqdm(range(0, len(audio_files), args.batch_size)):
             batch = audio_files[i : i + args.batch_size]

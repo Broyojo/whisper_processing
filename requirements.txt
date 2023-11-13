@@ -3,3 +3,5 @@ optimum
 accelerate
 torch
 tqdm
+librosa
+dac
