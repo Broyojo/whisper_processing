@@ -1,3 +1,5 @@
+# DAC - https://github.com/descriptinc/descript-audio-codec/tree/main
+
 import argparse
 import os
 
