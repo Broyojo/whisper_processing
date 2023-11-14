@@ -1,12 +1,9 @@
 import argparse
 import os
-from queue import Queue
-from threading import Thread
 
 import dac
 import torch
 from accelerate import PartialState
-from audiotools import AudioSignal
 from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description="A fast DAC inference script")
