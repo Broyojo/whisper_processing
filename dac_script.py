@@ -34,6 +34,22 @@ parser.add_argument(
     choices=["44khz", "24khz", "16khz"]
 )
 
+parser.add_argument(
+    "--win_duration",
+    required=False,
+    type=float,
+    default=1.0,
+    help="Window duration in seconds. (default: 1.0)"
+)
+
+parser.add_argument(
+    "--normalize_db",
+    required=False,
+    type=float,
+    default=-16,
+    help="Normalize db. (default: -16)"
+)
+
 def main():
     args = parser.parse_args()
     
@@ -60,7 +76,7 @@ def main():
             # run inference on each gpu
             with distributed_state.split_between_processes(batch) as device_batch:
                 with torch.no_grad():
-                    x = model.compress(device_batch[0])
+                    x = model.compress(device_batch[0], win_duration=args.win_duration, normalize_db=args.normalize_db)
                 x.save(os.path.join(args.code_path, os.path.basename(device_batch[0]).split(".")[0] + ".dac"))
 
     else:
